@@ -1,2 +1,25 @@
 ---
-# tasks file for wordpress-on-docker
+- name: Copy compose and config files
+  copy:
+    src: "{{ role_path }}/files/"
+    dest: "/app/wordpress"
+  tags:
+    - wordpress
+
+- name: Ensure wordpress container stack is started
+  docker_compose:
+    project_src: "/app/wordpress"
+  tags:
+    - wordpress
+
+- name: Ensure wordpress backup cron job is present
+  import_role:
+    name: docker_volume_backup
+  vars:
+    CRON_JOB_NAME: "wordpress"
+    CRON_JOB_MINUTE: "30"
+    CRON_JOB_HOUR: "05"
+    COMPOSE_FILE_ABSOLUTE_PATH: "/app/wordpress/docker-compose.yml"
+    VOLUME_NAMES: "wordpress_database wordpress_www_data"
+  tags:
+    - wordpress

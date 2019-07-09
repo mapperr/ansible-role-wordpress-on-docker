@@ -1,0 +1,61 @@
+version: '2'
+# ansible docker-compose module support version 1 and 2
+
+services:
+
+#  Wordpress configurations in wp-config.php:
+#
+#  define('WP_SITEURL', 'https://www.strokinapp.com');
+#  define('WP_HOME', 'https://www.strokinapp.com');
+#  // If we're behind a proxy server and using HTTPS, we need to alert Wordpress of that fact
+#  // see also http://codex.wordpress.org/Administration_Over_SSL#Using_a_Reverse_Proxy
+#  if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+#    $_SERVER['HTTPS'] = 'on';
+#    $_SERVER['SERVER_PORT'] = 443;
+#  }
+  wordpress:
+    image: wordpress:php7.3
+    restart: always
+    ports:
+        - "8000:80"
+    volumes:
+        - www_data:/var/www/html
+        - ./php.ini:/usr/local/etc/php/conf.d/custom-php.ini:ro
+    environment:
+      WORDPRESS_DB_HOST: database
+      WORDPRESS_DB_NAME: strokeindb
+      WORDPRESS_DB_USER: strokein
+      WORDPRESS_DB_PASSWORD: MeetAndShar3
+    depends_on:
+        - database
+
+  database:
+    image: mariadb:10
+    restart: always
+    ports:
+       - "3305:3306"
+    volumes:
+      - database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: dbrootP4ssword
+      MYSQL_DATABASE: strokeindb
+      MYSQL_USER: strokein
+      MYSQL_PASSWORD: MeetAndShar3
+
+  sftp:
+    image: tedezed/sftpd-multiuser
+    restart: always
+    ports:
+    - "2205:22"
+    volumes:
+    - www_data:/data/wordpress
+    environment:
+        MODE: "one_user"
+        OWNER: "www-data"
+        USER: "strokein"
+        PASS: "MeetAndShar3"
+        DIR: "/data/wordpress"
+
+volumes:
+  database:
+  www_data:
