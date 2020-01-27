@@ -6,7 +6,7 @@
   tags:
     - wordpress
 
-    - name: Ensure templated compose file is present
+- name: Ensure templated compose file is present
   template:
     src: "{{ role_path }}/templates/docker-compose.yml.j2"
     dest: "/app/wordpress/docker-compose.yml"
