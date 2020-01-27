@@ -23,9 +23,9 @@ services:
         - ./php.ini:/usr/local/etc/php/conf.d/custom-php.ini:ro
     environment:
       WORDPRESS_DB_HOST: database
-      WORDPRESS_DB_NAME: strokeindb
-      WORDPRESS_DB_USER: strokein
-      WORDPRESS_DB_PASSWORD: MeetAndShar3
+      WORDPRESS_DB_NAME: {{WORDPRESS_DBNAME}}
+      WORDPRESS_DB_USER: {{WORDPRESS_USER}}
+      WORDPRESS_DB_PASSWORD: {{WORDPRESS_PASS}}
     depends_on:
         - database
 
@@ -37,10 +37,10 @@ services:
     volumes:
       - database:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: dbrootP4ssword
-      MYSQL_DATABASE: strokeindb
-      MYSQL_USER: strokein
-      MYSQL_PASSWORD: MeetAndShar3
+      MYSQL_ROOT_PASSWORD: {{WORDPRESS_PASS}}
+      MYSQL_DATABASE: {{WORDPRESS_DBNAME}}
+      MYSQL_USER: {{WORDPRESS_USER}}
+      MYSQL_PASSWORD: {{WORDPRESS_PASS}}
 
   sftp:
     image: tedezed/sftpd-multiuser
@@ -52,8 +52,8 @@ services:
     environment:
         MODE: "one_user"
         OWNER: "www-data"
-        USER: "strokein"
-        PASS: "MeetAndShar3"
+        USER: "{{WORDPRESS_USER}}"
+        PASS: "{{WORDPRESS_PASS}}"
         DIR: "/data/wordpress"
 
 volumes:

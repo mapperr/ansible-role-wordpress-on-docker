@@ -1,2 +1,5 @@
 ---
 # defaults file for wordpress-on-docker
+WORDPRESS_DBNAME: "wordpress"
+WORDPRESS_USER: "admin"
+WORDPRESS_PASS: "admin"
